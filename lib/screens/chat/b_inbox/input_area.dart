@@ -143,12 +143,12 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
       ),
       onTap: () {
         if (!isEditing) {
-          ref.read(isEditingProvider.notifier).toggle(contactId);
+          ref.read(isEditingProvider.notifier).toggleOn(contactId);
         }
       },
       onTapOutside: (_) {
         if (isEditing && controller != null && controller!.text.isEmpty) {
-          ref.read(isEditingProvider.notifier).toggle(contactId);
+          ref.read(isEditingProvider.notifier).toggleOff(contactId);
         }
       },
     );

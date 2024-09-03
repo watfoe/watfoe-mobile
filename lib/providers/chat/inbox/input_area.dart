@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class _IsEditing extends StateNotifier<Map<String, bool>> {
   _IsEditing() : super({});
 
-  void toggle(String contactId) {
-    if (state.containsKey(contactId)) {
-      state.remove(contactId);
-    } else {
-      state = {...state, contactId: true};
-    }
+  void toggleOff(String contactId) {
+    state = {...state, contactId: false};
+  }
+
+  void toggleOn(String contactId) {
+    state = {...state, contactId: true};
   }
 }
 

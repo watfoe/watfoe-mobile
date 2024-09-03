@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watfoe/navigation/a_auth/a_auth.dart';
@@ -20,7 +22,7 @@ class WatfoeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: colorScheme,
-        fontFamily: null,
+        fontFamily: Platform.isAndroid ? 'OneUi' : null,
         iconTheme: iconTheme,
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: <TargetPlatform, PageTransitionsBuilder>{

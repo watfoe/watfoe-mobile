@@ -109,7 +109,6 @@ class _ContactListState extends State<ContactList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: _contacts.length,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemBuilder: (BuildContext context, int index) {
         return MaterialButton(
             splashColor: Colors.black.withAlpha(13),

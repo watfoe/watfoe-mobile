@@ -2,9 +2,11 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:watfoe/components/appbar/screen.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/screens/chat/b_inbox/input_area.dart';
+import 'package:watfoe/screens/chat/b_inbox/messages_area.dart';
 
 class PersonInbox extends ConsumerStatefulWidget {
   const PersonInbox({super.key});
@@ -58,17 +60,17 @@ class _PersonInboxState extends ConsumerState<PersonInbox> {
               tooltip: 'Options',
             ),
           ]),
-      body: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InputArea(
-                contactId: contact.id,
-              )
-            ],
-          )),
+      body: Column(
+        children: [
+          Expanded(
+            child: MessagesArea(),
+          ),
+          Gap(8),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+              child: InputArea(contactId: contact.id))
+        ],
+      ),
     );
   }
 }
