@@ -15,8 +15,8 @@ PreferredSizeWidget buildScreenAppBar(BuildContext context,
       foregroundColor: Colors.black,
       leadingWidth: 55,
       toolbarHeight: 55,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: COLOR_PRIMARY_6,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: colorPrimary6,
         statusBarIconBrightness: Brightness.dark,
       ),
       scrolledUnderElevation: 0,

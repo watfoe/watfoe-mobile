@@ -7,7 +7,7 @@ import 'package:watfoe/theme/color_scheme.dart';
 import 'package:watfoe/theme/icon.dart';
 
 void main() {
-  runApp(ProviderScope(child: const WatfoeApp()));
+  runApp(const ProviderScope(child: WatfoeApp()));
 }
 
 class WatfoeApp extends StatelessWidget {
@@ -17,6 +17,7 @@ class WatfoeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Watfoe',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: colorScheme,
         fontFamily: null,

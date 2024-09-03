@@ -71,7 +71,7 @@ class _InputAreaState extends ConsumerState<InputArea> {
                 children: [
                   ButtonIcon(
                     icon: FluentIcons.flash_sparkle_24_regular,
-                    fgcolor: COLOR_NEUTRAL_7,
+                    fgcolor: colorNeutral7,
                     onPressed: () {},
                     tooltip: 'Watfoe Ai',
                   ),
@@ -83,13 +83,13 @@ class _InputAreaState extends ConsumerState<InputArea> {
                             )),
                   ButtonIcon(
                     icon: FluentIcons.camera_24_regular,
-                    fgcolor: COLOR_NEUTRAL_7,
+                    fgcolor: colorNeutral7,
                     onPressed: () {},
                     tooltip: 'Take photo',
                   ),
                   ButtonIcon(
                     icon: FluentIcons.add_circle_24_regular,
-                    fgcolor: COLOR_NEUTRAL_7,
+                    fgcolor: colorNeutral7,
                     onPressed: () {},
                     tooltip: 'Add attachment',
                   ),
@@ -131,7 +131,7 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
           isDense: true,
           contentPadding: EdgeInsets.fromLTRB(isEditing ? 17 : 0, 25, 0, 0),
           hintStyle: const TextStyle(
-              color: COLOR_NEUTRAL_7, fontWeight: FontWeight.w400),
+              color: colorNeutral7, fontWeight: FontWeight.w400),
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
               borderSide: BorderSide.none),

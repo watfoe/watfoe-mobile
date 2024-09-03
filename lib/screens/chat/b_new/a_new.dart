@@ -156,7 +156,7 @@ Widget _buildContactItem(BuildContext context, Contact contact, bool selected) {
     subtitleTextStyle: TextStyle(
         color: selected
             ? Theme.of(context).colorScheme.onPrimaryContainer
-            : COLOR_NEUTRAL_7,
+            : colorNeutral7,
         fontSize: 15),
     leading: Avatar(
       radius: 20,

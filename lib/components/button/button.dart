@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
 class ButtonIcon extends StatelessWidget {
-  IconData icon;
-  Function? onPressed;
-  Color? bgcolor;
-  Color? fgcolor;
-  double? size;
-  String? tooltip;
-
-  ButtonIcon(
-      {required this.icon,
+  const ButtonIcon(
+      {super.key,
+      required this.icon,
       required this.onPressed,
       this.bgcolor,
       this.fgcolor,
       this.size,
       this.tooltip});
+
+  final IconData icon;
+  final Function? onPressed;
+  final Color? bgcolor;
+  final Color? fgcolor;
+  final double? size;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class ButtonIcon extends StatelessWidget {
           foregroundColor:
               fgcolor != null ? WidgetStateProperty.all<Color>(fgcolor!) : null,
         ),
-        tooltip: tooltip ?? null,
+        tooltip: tooltip,
         icon: Icon(icon));
   }
 }

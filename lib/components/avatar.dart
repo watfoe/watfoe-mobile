@@ -9,10 +9,10 @@ class Avatar extends StatelessWidget {
       this.hasStatus = false,
       this.ringColor = Colors.black});
 
-  String? url;
-  Color ringColor;
+  final String? url;
+  final Color ringColor;
+  final bool hasStatus;
   double radius;
-  bool hasStatus;
 
   @override
   Widget build(BuildContext context) {

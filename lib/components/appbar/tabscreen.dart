@@ -13,8 +13,8 @@ PreferredSizeWidget buildTabscreenAppBar(BuildContext context,
       automaticallyImplyLeading: false,
       backgroundColor: Theme.of(context).colorScheme.surface,
       foregroundColor: Theme.of(context).colorScheme.onSurface,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: COLOR_PRIMARY_6,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: colorPrimary6,
         statusBarIconBrightness: Brightness.dark,
       ),
       scrolledUnderElevation: 0,
