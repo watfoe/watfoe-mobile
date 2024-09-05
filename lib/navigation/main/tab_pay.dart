@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:watfoe/navigation/watfoe.dart';
-import 'package:watfoe/screens/home/home.dart';
+import 'package:watfoe/navigation/watfoe_page_route.dart';
+import 'package:watfoe/screens/pay/pay.dart';
 
-class HomeNavigator extends StatelessWidget {
-  const HomeNavigator({super.key, required this.navigatorKey});
+class PayTabNavigator extends StatelessWidget {
+  const PayTabNavigator({super.key, required this.navigatorKey});
 
   final GlobalKey<NavigatorState> navigatorKey;
 
@@ -11,12 +11,12 @@ class HomeNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Navigator(
       key: navigatorKey,
-      initialRoute: 'home',
+      initialRoute: 'pay',
       onGenerateRoute: (RouteSettings settings) {
         WidgetBuilder builder;
         switch (settings.name) {
-          case 'home':
-            builder = (BuildContext context) => const Home();
+          case 'pay':
+            builder = (BuildContext context) => const Pay();
           default:
             throw Exception('Invalid route: ${settings.name}');
         }

@@ -1,10 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watfoe/components/appbar/screen.dart';
 import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/components/button/button.dart';
+import 'package:watfoe/providers/contacts.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
 class NewChat extends StatefulWidget {
@@ -15,14 +16,14 @@ class NewChat extends StatefulWidget {
 }
 
 class _NewChat extends State<NewChat> {
-  List<int> selectedContacts = [];
+  List<String> selectedContacts = [];
 
-  _selectContact(int index) {
+  _selectContact(String contactId) {
     setState(() {
-      if (selectedContacts.contains(index)) {
-        selectedContacts.remove(index);
+      if (selectedContacts.contains(contactId)) {
+        selectedContacts.remove(contactId);
       } else {
-        selectedContacts.add(index);
+        selectedContacts.add(contactId);
       }
     });
   }
@@ -61,37 +62,32 @@ class _NewChat extends State<NewChat> {
   }
 }
 
-class ContactList extends StatefulWidget {
+class ContactList extends ConsumerStatefulWidget {
   const ContactList(
       {super.key, required this.selectedContacts, required this.selectContact});
 
-  final List<int> selectedContacts;
-  final Function(int) selectContact;
+  final List<String> selectedContacts;
+  final Function(String) selectContact;
 
   @override
-  State<StatefulWidget> createState() => _ContactListState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ContactListState();
 }
 
-class _ContactListState extends State<ContactList> {
-  List<int> get selectedContacts => widget.selectedContacts;
+class _ContactListState extends ConsumerState<ContactList> {
+  List<String> get selectedContacts => widget.selectedContacts;
 
-  Function(int) get _selectContact => widget.selectContact;
-
-  PermissionStatus _permissionStatus = PermissionStatus.denied;
-  List<Contact> _contacts = [];
+  Function(String) get _selectContact => widget.selectContact;
 
   @override
   void initState() {
     super.initState();
-
-    _fetchContacts();
   }
 
-  _onPressed(int index) {
+  _onPressed(Contact contact) {
     var handled = false;
     setState(() {
       if (selectedContacts.isNotEmpty) {
-        _selectContact(index);
+        _selectContact(contact.id);
         handled = true;
       }
     });
@@ -99,46 +95,35 @@ class _ContactListState extends State<ContactList> {
     if (!handled) {
       // User should be redirected to the empty/all chat screen
       // after navigating from the message screen
-
       Navigator.pushReplacementNamed(context, 'chat/inbox/person',
-          arguments: _contacts[index]);
+          arguments: contact);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _contacts.length,
-      itemBuilder: (BuildContext context, int index) {
-        return MaterialButton(
-            splashColor: Colors.black.withAlpha(13),
-            padding: const EdgeInsets.all(0),
-            onPressed: () {
-              _onPressed(index);
-            },
-            onLongPress: () {
-              _selectContact(index);
-            },
-            child: _buildContactItem(
-                context, _contacts[index], selectedContacts.contains(index)));
-      },
-    );
-  }
+    final contactsFut = ref.watch(contactsProvider);
 
-  Future<void> _requestPermission() async {
-    final status = await Permission.contacts.request();
-
-    setState(() {
-      _permissionStatus = status;
-    });
-  }
-
-  Future<void> _fetchContacts() async {
-    await _requestPermission();
-    if (_permissionStatus.isGranted) {
-      final contacts = await FlutterContacts.getContacts();
-      setState(() => _contacts = contacts);
-    }
+    return contactsFut.when(
+        data: (contacts) => ListView.builder(
+              itemCount: contacts.length,
+              itemBuilder: (BuildContext context, int index) {
+                final contact = contacts[index];
+                return MaterialButton(
+                    splashColor: Colors.black.withAlpha(13),
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      _onPressed(contact);
+                    },
+                    onLongPress: () {
+                      _selectContact(contact.id);
+                    },
+                    child: _buildContactItem(context, contact,
+                        selectedContacts.contains(contact.id)));
+              },
+            ),
+        error: (error, _) => const SizedBox(),
+        loading: () => const SizedBox());
   }
 }
 

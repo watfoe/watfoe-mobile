@@ -9,6 +9,7 @@ class BottomNavigation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavigationProvider).index;
+
     return NavigationBar(
       backgroundColor: Theme.of(context).colorScheme.surface,
       onDestinationSelected: (int index) {

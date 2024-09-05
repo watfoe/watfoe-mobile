@@ -20,7 +20,7 @@ class _MessagesAreaState extends State<MessagesArea> {
       "text":
           "Did you see the latest data from the Mars rover? The soil samples are revealing something interesting.",
       "createdAt": "2023-08-10T09:00:00Z",
-      "state": "sent",
+      "state": "read",
       "type": "outgoing"
     },
     {
@@ -36,7 +36,7 @@ class _MessagesAreaState extends State<MessagesArea> {
       "text":
           "Absolutely. I’m curious about the next set of images from the crater’s edge.",
       "createdAt": "2023-08-10T09:05:30Z",
-      "state": "sent",
+      "state": "read",
       "type": "outgoing"
     },
     {
@@ -52,7 +52,7 @@ class _MessagesAreaState extends State<MessagesArea> {
       "text":
           "By the way, did you check the link I sent earlier on the recent asteroid mission? It’s fascinating!",
       "createdAt": "2023-08-10T09:10:05Z",
-      "state": "sent",
+      "state": "read",
       "type": "outgoing",
       "attachment": {
         "type": "link",
@@ -73,7 +73,7 @@ class _MessagesAreaState extends State<MessagesArea> {
       "text":
           "Exactly! These findings might even change our understanding of how planets formed.",
       "createdAt": "2023-08-10T09:15:00Z",
-      "state": "sent",
+      "state": "read",
       "type": "outgoing"
     },
     {
@@ -90,7 +90,7 @@ class _MessagesAreaState extends State<MessagesArea> {
       "text":
           "No worries, it’s a complex topic. The idea of protoplanets is intriguing—imagine the stories they could tell!",
       "createdAt": "2023-08-10T09:20:10Z",
-      "state": "sent",
+      "state": "read",
       "type": "outgoing"
     },
     {
@@ -100,6 +100,13 @@ class _MessagesAreaState extends State<MessagesArea> {
       "createdAt": "2023-08-10T09:23:00Z",
       "state": "read",
       "type": "incoming"
+    },
+    {
+      "id": "11",
+      "text": "That, is wonderful",
+      "createdAt": "2023-08-10T09:27:00Z",
+      "state": "read",
+      "type": "outgoing"
     }
   ];
 

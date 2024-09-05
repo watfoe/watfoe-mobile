@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:watfoe/components/appbar/tabscreen.dart';
-import 'package:watfoe/navigation/a_main/b_bottom_navigation.dart';
+import 'package:watfoe/components/bottom_navigation.dart';
 
 class Sosol extends StatefulWidget {
   const Sosol({super.key});

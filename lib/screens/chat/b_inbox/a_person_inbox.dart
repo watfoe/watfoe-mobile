@@ -62,10 +62,10 @@ class _PersonInboxState extends ConsumerState<PersonInbox> {
           ]),
       body: Column(
         children: [
-          Expanded(
+          const Expanded(
             child: MessagesArea(),
           ),
-          Gap(8),
+          const Gap(8),
           Padding(
               padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
               child: InputArea(contactId: contact.id))

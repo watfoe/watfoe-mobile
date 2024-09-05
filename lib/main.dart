@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:watfoe/navigation/a_auth/a_auth.dart';
-import 'package:watfoe/navigation/a_main/a_main.dart';
-import 'package:watfoe/screens/welcome.dart';
+import 'package:watfoe/navigation/auth/auth.dart';
+import 'package:watfoe/navigation/main/main.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 import 'package:watfoe/theme/icon.dart';
 
@@ -33,7 +32,7 @@ class WatfoeApp extends StatelessWidget {
         typography: Typography.material2021(),
         useMaterial3: true,
       ),
-      home: const Welcome(),
+      home: const MainNavigation(),
       routes: <String, WidgetBuilder>{
         '/auth': (BuildContext context) => const AuthNavigation(),
         '/main': (BuildContext context) => const MainNavigation(),

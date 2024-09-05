@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:watfoe/navigation/watfoe.dart';
+import 'package:watfoe/navigation/watfoe_page_route.dart';
 import 'package:watfoe/screens/sosol/sosol.dart';
 
-class SosolNavigator extends StatelessWidget {
-  const SosolNavigator({super.key, required this.navigatorKey});
+class SosolTabNavigator extends StatelessWidget {
+  const SosolTabNavigator({super.key, required this.navigatorKey});
 
   final GlobalKey<NavigatorState> navigatorKey;
 

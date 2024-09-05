@@ -29,8 +29,9 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
         children: [
           Container(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.8),
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 3),
+              maxWidth: MediaQuery.of(context).size.width * 0.8,
+            ),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: message.type == MessageType.incoming
                   ? colorPrimary6.withAlpha(55)
@@ -39,20 +40,16 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
             ),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              message.text != null
-                  ? Text(message.text!,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w400))
-                  : const SizedBox(),
               message.attachment != null &&
                       message.attachment!.type == MessageAttachmentType.link
                   ? Column(
                       children: [
+                        _buildLinkAttachment(message.attachment!.link!),
                         const Gap(5),
-                        _buildLinkAttachment(message.attachment!.link!)
                       ],
                     )
                   : const SizedBox(),
+              message.text != null ? _buildText() : const SizedBox(),
               message.type == MessageType.incoming
                   ? _buildMessageTime()
                   : Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -66,13 +63,25 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
         ]);
   }
 
+  Widget _buildText() {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+        child: Text(
+          message.text!,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+        ));
+  }
+
   Widget _buildMessageTime() {
     final time = DateFormat.jm().format(message.createdAt);
 
     return Text(
       time,
       style: const TextStyle(
-          color: colorNeutral7, fontSize: 12, fontWeight: FontWeight.w400),
+          color: colorNeutral7,
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          height: 1),
     );
   }
 
@@ -97,10 +106,6 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
   }
 
   Widget _buildAttachment() {
-    if (message.attachment == null) {
-      return const SizedBox();
-    }
-
     final attachment = message.attachment;
     switch (attachment!.type) {
       case MessageAttachmentType.link:

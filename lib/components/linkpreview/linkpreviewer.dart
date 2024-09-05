@@ -28,7 +28,7 @@ class _LinkPreviewer extends State<LinkPreviewer> {
         },
         child: ClipRRect(
           borderRadius: const BorderRadius.all(
-            Radius.circular(5),
+            Radius.circular(6),
           ),
           child: LinkPreview(
             enableAnimation: true,
@@ -44,9 +44,7 @@ class _LinkPreviewer extends State<LinkPreviewer> {
             padding: const EdgeInsets.all(0),
             previewBuilder: (_, previewData) {
               return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                ),
+                color: colorNeutral1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -57,26 +55,33 @@ class _LinkPreviewer extends State<LinkPreviewer> {
                           )
                         : const SizedBox(),
                     const Gap(5),
-                    Text(
-                      previewData.title ?? '',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Gap(5),
-                    Text(
-                      previewData.description ?? '',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const Gap(5),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 8),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                previewData.title ?? '',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Gap(5),
+                              Text(
+                                previewData.description ?? '',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const Gap(5),
+                            ])),
                   ],
                 ),
               );
