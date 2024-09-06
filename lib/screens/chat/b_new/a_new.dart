@@ -78,7 +78,8 @@ class _NewChat extends State<NewChat> {
       width: MediaQuery.of(context).size.width * 0.3,
       child: TextButton(
           onPressed: onPressed,
-          child: Text(text, style: TextStyle(fontWeight: FontWeight.w500))),
+          child: Text(text,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
     );
   }
 }

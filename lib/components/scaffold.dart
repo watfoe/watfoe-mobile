@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/components/bottom_navigation.dart';
@@ -82,10 +81,6 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
                 : 0,
         leading: _buildLeading(context),
         toolbarHeight: 60,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: colorPrimary6,
-          statusBarIconBrightness: Brightness.dark,
-        ),
         scrolledUnderElevation: 0,
         title: _title(),
         centerTitle: widget.centerTitle,
@@ -121,26 +116,24 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
     final canPop = Navigator.of(context).canPop();
 
     if (canPop) {
+      var leading;
       if (appBarAvatarUrl != null || showAppBarAvatar) {
-        return Row(
+        leading = Row(
           children: [
             _backButton(context),
             _avatar(context),
           ],
         );
       } else {
-        return Row(children: [
-          Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: _backButton(context))
-        ]);
+        leading = Row(children: [_backButton(context)]);
       }
+
+      return Padding(padding: const EdgeInsets.only(left: 3), child: leading);
     } else {
       if (appBarAvatarUrl != null || showAppBarAvatar) {
-        return Row(children: [
-          Padding(
-              padding: const EdgeInsets.only(left: 13), child: _avatar(context))
-        ]);
+        return Padding(
+            padding: const EdgeInsets.only(left: 13),
+            child: Row(children: [_avatar(context)]));
       }
     }
 
