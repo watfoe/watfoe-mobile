@@ -2,9 +2,9 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:watfoe/components/appbar/screen.dart';
 import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/components/button/button.dart';
+import 'package:watfoe/components/scaffold.dart';
 import 'package:watfoe/providers/contacts.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
@@ -30,28 +30,27 @@ class _NewChat extends State<NewChat> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildScreenAppBar(context,
-          title: selectedContacts.isNotEmpty
-              ? selectedContacts.length.toString()
-              : 'New chat',
-          actions: selectedContacts.isNotEmpty
-              ? [
-                  ButtonIcon(
-                      icon: FluentIcons.more_vertical_24_regular,
-                      onPressed: () {},
-                      tooltip: 'More'),
-                ]
-              : [
-                  ButtonIcon(
-                      icon: FluentIcons.search_24_regular,
-                      onPressed: () {},
-                      tooltip: 'Search'),
-                  ButtonIcon(
-                      icon: FluentIcons.more_vertical_24_regular,
-                      onPressed: () {},
-                      tooltip: 'More'),
-                ]),
+    return WatfoeScaffold(
+      appBarTitle: selectedContacts.isNotEmpty
+          ? selectedContacts.length.toString()
+          : 'New chat',
+      appBarActions: selectedContacts.isNotEmpty
+          ? [
+              ButtonIcon(
+                  icon: FluentIcons.more_vertical_24_regular,
+                  onPressed: () {},
+                  tooltip: 'More'),
+            ]
+          : [
+              ButtonIcon(
+                  icon: FluentIcons.search_24_regular,
+                  onPressed: () {},
+                  tooltip: 'Search'),
+              ButtonIcon(
+                  icon: FluentIcons.more_vertical_24_regular,
+                  onPressed: () {},
+                  tooltip: 'More'),
+            ],
       body: ContactList(
           selectedContacts: selectedContacts, selectContact: _selectContact),
       persistentFooterButtons: selectedContacts.isNotEmpty
@@ -70,7 +69,6 @@ class _NewChat extends State<NewChat> {
               ),
             ]
           : null,
-      persistentFooterAlignment: AlignmentDirectional.center,
     );
   }
 

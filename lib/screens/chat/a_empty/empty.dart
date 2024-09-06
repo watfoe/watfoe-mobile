@@ -1,17 +1,17 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:watfoe/components/appbar/tabscreen.dart';
-import 'package:watfoe/components/bottom_navigation.dart';
 import 'package:watfoe/components/button/button.dart';
+import 'package:watfoe/components/scaffold.dart';
 
 class EmptyChat extends StatelessWidget {
   const EmptyChat({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildTabscreenAppBar(context, title: "", actions: [
+    return WatfoeScaffold(
+      appBarAvatarUrl: "https://cdn.watfoe.com/i/watfoe-logo.png",
+      appBarActions: [
         RotatedBox(
             quarterTurns: -1,
             child: ButtonIcon(
@@ -24,8 +24,8 @@ class EmptyChat extends StatelessWidget {
           onPressed: () {},
           tooltip: 'More chat options',
         ),
-      ]),
-      bottomNavigationBar: const BottomNavigation(),
+      ],
+      showBottomNavigationBar: true,
       body: Container(
           alignment: Alignment.center,
           child: Column(

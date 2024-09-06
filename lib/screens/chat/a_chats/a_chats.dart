@@ -1,9 +1,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:watfoe/components/appbar/tabscreen.dart';
-import 'package:watfoe/components/bottom_navigation.dart';
 import 'package:watfoe/components/button/button.dart';
+import 'package:watfoe/components/scaffold.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -17,8 +16,9 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildTabscreenAppBar(context, title: 'Chat', actions: [
+    return WatfoeScaffold(
+      appBarTitle: 'Chat',
+      appBarActions: [
         RotatedBox(
             quarterTurns: -1,
             child: ButtonIcon(
@@ -36,8 +36,8 @@ class _ChatState extends State<Chat> {
           onPressed: () {},
           tooltip: 'More chat options',
         ),
-      ]),
-      bottomNavigationBar: const BottomNavigation(),
+      ],
+      showBottomNavigationBar: true,
       body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [Gap(30)],

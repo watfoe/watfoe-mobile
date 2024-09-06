@@ -1,27 +1,25 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:watfoe/components/appbar/tabscreen.dart';
-import 'package:watfoe/components/bottom_navigation.dart';
+import 'package:watfoe/components/button/button.dart';
+import 'package:watfoe/components/scaffold.dart';
 
-class Sosol extends StatefulWidget {
+class Sosol extends StatelessWidget {
   const Sosol({super.key});
 
   @override
-  State<Sosol> createState() => _SosolState();
-}
-
-class _SosolState extends State<Sosol> {
-  int currentPageIndex = 0;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildTabscreenAppBar(context, title: 'Sosol'),
-      bottomNavigationBar: const BottomNavigation(),
-      body: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [Gap(30)],
-      ),
+    return WatfoeScaffold(
+      appBarAvatarUrl: "https://cdn.watfoe.com/i/watfoe-logo.png",
+      appBarTitle: 'Sosol',
+      appBarActions: [
+        ButtonIcon(
+          icon: FluentIcons.more_vertical_24_regular,
+          onPressed: () {},
+          tooltip: 'More sosol options',
+        ),
+      ],
+      showBottomNavigationBar: true,
+      body: Container(),
     );
   }
 }

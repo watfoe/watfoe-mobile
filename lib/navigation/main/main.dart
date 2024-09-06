@@ -36,7 +36,7 @@ class MainNavigation extends ConsumerWidget {
               systemNavigationBarColor: Theme.of(context).colorScheme.surface,
               systemNavigationBarIconBrightness: Brightness.dark,
             ),
-            child: Scaffold(body: SafeArea(child: _buildNavigator(ref)))));
+            child: _buildNavigator(ref)));
   }
 
   Widget _buildNavigator(WidgetRef ref) {
