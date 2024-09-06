@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:watfoe/components/avatar.dart';
+import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
 PreferredSizeWidget buildScreenAppBar(BuildContext context,
@@ -14,7 +18,14 @@ PreferredSizeWidget buildScreenAppBar(BuildContext context,
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
       leadingWidth: 55,
-      toolbarHeight: 55,
+      leading: Platform.isAndroid
+          ? ButtonIcon(
+              icon: FluentIcons.arrow_left_24_regular,
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+          : null,
+      toolbarHeight: 60,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: colorPrimary6,
         statusBarIconBrightness: Brightness.dark,

@@ -141,16 +141,7 @@ class _MessagesAreaState extends State<MessagesArea> {
       itemBuilder: (BuildContext context, int index) {
         final message = Message.fromJson(_messages[index]);
 
-        return MaterialButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            onPressed: () {},
-            onLongPress: () {
-              _selectMessage(index);
-            },
-            child: MessageContainer(message: message));
+        return MessageContainer(message: message);
       },
     );
   }

@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/providers/chat/inbox/input_area.dart';
+import 'package:watfoe/screens/chat/b_inbox/media_picker.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
 class InputArea extends ConsumerStatefulWidget {
@@ -84,7 +85,13 @@ class _InputAreaState extends ConsumerState<InputArea> {
                   ButtonIcon(
                     icon: FluentIcons.camera_24_regular,
                     fgcolor: colorNeutral7,
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => const MediaPickerScreen(),
+                        useSafeArea: false,
+                      );
+                    },
                     tooltip: 'Take photo',
                   ),
                   ButtonIcon(

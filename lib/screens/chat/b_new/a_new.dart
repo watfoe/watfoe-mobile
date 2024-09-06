@@ -37,14 +37,10 @@ class _NewChat extends State<NewChat> {
               : 'New chat',
           actions: selectedContacts.isNotEmpty
               ? [
-                  TextButton(
-                      child: const Text('Broadcast',
-                          style: TextStyle(fontSize: 15)),
-                      onPressed: () {}),
-                  TextButton(
-                      child: const Text('New community',
-                          style: TextStyle(fontSize: 15)),
-                      onPressed: () {}),
+                  ButtonIcon(
+                      icon: FluentIcons.more_vertical_24_regular,
+                      onPressed: () {},
+                      tooltip: 'More'),
                 ]
               : [
                   ButtonIcon(
@@ -58,6 +54,33 @@ class _NewChat extends State<NewChat> {
                 ]),
       body: ContactList(
           selectedContacts: selectedContacts, selectContact: _selectContact),
+      persistentFooterButtons: selectedContacts.isNotEmpty
+          ? [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildFooterButton(context, 'Cancel', () {
+                    setState(() {
+                      selectedContacts.clear();
+                    });
+                  }),
+                  _buildFooterButton(context, 'Broadcast', () {}),
+                  _buildFooterButton(context, 'New group', () {}),
+                ],
+              ),
+            ]
+          : null,
+      persistentFooterAlignment: AlignmentDirectional.center,
+    );
+  }
+
+  Widget _buildFooterButton(
+      BuildContext context, String text, Function() onPressed) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: TextButton(
+          onPressed: onPressed,
+          child: Text(text, style: TextStyle(fontWeight: FontWeight.w500))),
     );
   }
 }
@@ -122,8 +145,8 @@ class _ContactListState extends ConsumerState<ContactList> {
                         selectedContacts.contains(contact.id)));
               },
             ),
-        error: (error, _) => const SizedBox(),
-        loading: () => const SizedBox());
+        error: (error, _) => Container(),
+        loading: () => Container());
   }
 }
 
@@ -135,13 +158,15 @@ Widget _buildContactItem(BuildContext context, Contact contact, bool selected) {
         color: selected
             ? Theme.of(context).colorScheme.onPrimaryContainer
             : Theme.of(context).colorScheme.primary,
-        fontSize: 16),
+        fontSize: 16,
+        height: 1),
     subtitle: const Text('Some tagline over here'),
     subtitleTextStyle: TextStyle(
         color: selected
             ? Theme.of(context).colorScheme.onPrimaryContainer
             : colorNeutral7,
-        fontSize: 15),
+        fontSize: 15,
+        height: 1),
     leading: Avatar(
       radius: 20,
     ),

@@ -29,7 +29,6 @@ class WatfoeApp extends StatelessWidget {
             TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           },
         ),
-        typography: Typography.material2021(),
         useMaterial3: true,
       ),
       home: const MainNavigation(),

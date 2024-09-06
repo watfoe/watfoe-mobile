@@ -22,50 +22,67 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        mainAxisAlignment: message.type == MessageType.incoming
-            ? MainAxisAlignment.start
-            : MainAxisAlignment.end,
-        children: [
-          Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.8,
-            ),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: message.type == MessageType.incoming
-                  ? colorPrimary6.withAlpha(55)
-                  : Colors.black.withAlpha(16),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              message.attachment != null &&
-                      message.attachment!.type == MessageAttachmentType.link
-                  ? Column(
-                      children: [
-                        _buildLinkAttachment(message.attachment!.link!),
-                        const Gap(5),
-                      ],
-                    )
-                  : const SizedBox(),
-              message.text != null ? _buildText() : const SizedBox(),
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 13),
+        child: Column(
+            crossAxisAlignment: message.type == MessageType.incoming
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.end,
+            children: [
+              ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.8,
+                  ),
+                  child: GestureDetector(
+                      onDoubleTap: () {
+                        // Like the message
+                      },
+                      onLongPress: () {
+                        // Select the message
+                        // Show message options
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: message.type == MessageType.incoming
+                              ? colorPrimary6.withAlpha(44)
+                              : Colors.black.withAlpha(16),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: message.attachment == null
+                            ? _buildText()
+                            : Column(
+                                children: [
+                                  _buildAttachment(),
+                                  const Gap(5),
+                                  _buildText(),
+                                ],
+                              ),
+                      ))),
               message.type == MessageType.incoming
-                  ? _buildMessageTime()
-                  : Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      _buildMessageTime(),
-                      const Gap(5),
-                      _buildMessageStateIcon(),
-                      // _buildStateIcon()
-                    ]),
-            ]),
-          )
-        ]);
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 10, top: 5),
+                      child: _buildMessageTime())
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 10, top: 2),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _buildMessageTime(),
+                            const Gap(5),
+                            _buildMessageStateIcon(),
+                            // _buildStateIcon()
+                          ])),
+            ]));
   }
 
   Widget _buildText() {
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+    if (message.text == null) {
+      return Container();
+    }
+
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
         child: Text(
           message.text!,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
@@ -73,13 +90,13 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
   }
 
   Widget _buildMessageTime() {
-    final time = DateFormat.jm().format(message.createdAt);
+    final time = DateFormat.jm().format(message.createdAt).toLowerCase();
 
     return Text(
       time,
       style: const TextStyle(
           color: colorNeutral7,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w400,
           height: 1),
     );
@@ -96,12 +113,11 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
         return const Icon(Symbols.done_all_rounded,
             color: colorNeutral6, size: 16);
       case MessageState.read:
-        return const Icon(Symbols.done_all_rounded,
-            color: colorPrimary6, size: 16);
+        return const Icon(Symbols.done_all_rounded, size: 16);
       case MessageState.queued:
       case MessageState.sending:
       default:
-        return const Icon(Icons.access_time, color: colorNeutral6, size: 15);
+        return const Icon(Icons.access_time, color: colorNeutral6, size: 16);
     }
   }
 
@@ -111,7 +127,7 @@ class _MessageContainerState extends ConsumerState<MessageContainer> {
       case MessageAttachmentType.link:
         return _buildLinkAttachment(attachment.link!);
       default:
-        return const SizedBox();
+        return Container();
     }
   }
 
