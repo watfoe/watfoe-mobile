@@ -17,6 +17,7 @@ class NewChat extends StatefulWidget {
 
 class _NewChat extends State<NewChat> {
   List<String> selectedContacts = [];
+  bool searchBarVisible = false;
 
   _selectContact(String contactId) {
     setState(() {
@@ -25,7 +26,31 @@ class _NewChat extends State<NewChat> {
       } else {
         selectedContacts.add(contactId);
       }
+
+      if (searchBarVisible) {
+        searchBarVisible = false;
+      }
     });
+  }
+
+  _showSearchBar() {
+    setState(() {
+      searchBarVisible = true;
+    });
+  }
+
+  _onAppBarBackButtonPressed() {
+    if (searchBarVisible) {
+      setState(() {
+        searchBarVisible = false;
+      });
+    } else if (selectedContacts.isNotEmpty) {
+      setState(() {
+        selectedContacts.clear();
+      });
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -34,6 +59,25 @@ class _NewChat extends State<NewChat> {
       appBarTitle: selectedContacts.isNotEmpty
           ? selectedContacts.length.toString()
           : 'New chat',
+      appBarTitleWidget: searchBarVisible
+          ? TextField(
+              autofocus: true,
+              decoration: InputDecoration(
+                  constraints: const BoxConstraints(maxHeight: 40),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                  hintText: 'Search contacts',
+                  hintStyle: TextStyle(color: colorNeutral7),
+                  prefixIcon: Icon(
+                    FluentIcons.search_24_regular,
+                    size: 20,
+                  ),
+                  filled: true,
+                  fillColor: Colors.black.withAlpha(16),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide.none)),
+            )
+          : null,
       appBarActions: selectedContacts.isNotEmpty
           ? [
               ButtonIcon(
@@ -41,16 +85,19 @@ class _NewChat extends State<NewChat> {
                   onPressed: () {},
                   tooltip: 'More'),
             ]
-          : [
-              ButtonIcon(
-                  icon: FluentIcons.search_24_regular,
-                  onPressed: () {},
-                  tooltip: 'Search'),
-              ButtonIcon(
-                  icon: FluentIcons.more_vertical_24_regular,
-                  onPressed: () {},
-                  tooltip: 'More'),
-            ],
+          : !searchBarVisible
+              ? [
+                  ButtonIcon(
+                      icon: FluentIcons.search_24_regular,
+                      onPressed: _showSearchBar,
+                      tooltip: 'Search'),
+                  ButtonIcon(
+                      icon: FluentIcons.more_vertical_24_regular,
+                      onPressed: () {},
+                      tooltip: 'More'),
+                ]
+              : [],
+      onAppBarBackButtonPressed: _onAppBarBackButtonPressed,
       body: ContactList(
           selectedContacts: selectedContacts, selectContact: _selectContact),
       persistentFooterButtons: selectedContacts.isNotEmpty
@@ -74,12 +121,13 @@ class _NewChat extends State<NewChat> {
 
   Widget _buildFooterButton(
       BuildContext context, String text, Function() onPressed) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.3,
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width - 20) / 3,
       child: TextButton(
           onPressed: onPressed,
           child: Text(text,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+              style:
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
     );
   }
 }
@@ -151,7 +199,7 @@ class _ContactListState extends ConsumerState<ContactList> {
 
 Widget _buildContactItem(BuildContext context, Contact contact, bool selected) {
   return ListTile(
-    contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+    contentPadding: const EdgeInsets.fromLTRB(8, 0, 13, 0),
     title: Text(contact.displayName),
     titleTextStyle: TextStyle(
         color: selected

@@ -21,6 +21,9 @@ class WatfoeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: colorScheme,
+        dividerTheme: const DividerThemeData(
+          color: colorNeutral1,
+        ),
         fontFamily: Platform.isAndroid ? 'OneUi' : null,
         iconTheme: iconTheme,
         pageTransitionsTheme: const PageTransitionsTheme(

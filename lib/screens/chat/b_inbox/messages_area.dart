@@ -135,14 +135,14 @@ class _MessagesAreaState extends State<MessagesArea> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _messages.length,
-      reverse: true,
-      itemBuilder: (BuildContext context, int index) {
-        final message = Message.fromJson(_messages[index]);
+    return AnimatedList(
+        initialItemCount: _messages.length,
+        reverse: true,
+        itemBuilder:
+            (BuildContext context, int index, Animation<double> animation) {
+          final message = Message.fromJson(_messages[index]);
 
-        return MessageContainer(message: message);
-      },
-    );
+          return MessageContainer(message: message);
+        });
   }
 }

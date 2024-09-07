@@ -19,9 +19,14 @@ class WatfoeScaffold extends StatefulWidget {
       this.appBarActions = const <Widget>[],
       this.appBarAvatarUrl,
       this.showAppBarAvatar = false,
+      this.appBarFlexibleSpace,
+      this.bottom,
       this.showBottomNavigationBar = false,
       this.floatingActionButton,
-      this.persistentFooterButtons});
+      this.persistentFooterButtons,
+      this.isFullScreenDialog = false,
+      this.onAppBarBackButtonPressed,
+      this.showAppBarBackButton = true});
 
   final Widget body;
   final String? appBarTitle;
@@ -31,9 +36,14 @@ class WatfoeScaffold extends StatefulWidget {
   final List<Widget>? appBarActions;
   final String? appBarAvatarUrl;
   final bool showAppBarAvatar;
+  final Widget? appBarFlexibleSpace;
+  final PreferredSizeWidget? bottom;
   final bool showBottomNavigationBar;
   final Widget? floatingActionButton;
   final List<Widget>? persistentFooterButtons;
+  final bool isFullScreenDialog;
+  final void Function()? onAppBarBackButtonPressed;
+  final bool showAppBarBackButton;
 
   @override
   State<StatefulWidget> createState() => _WatfoeScaffold();
@@ -80,6 +90,8 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
                 ? 48
                 : 0,
         leading: _buildLeading(context),
+        flexibleSpace: widget.appBarFlexibleSpace,
+        bottom: widget.bottom,
         toolbarHeight: 60,
         scrolledUnderElevation: 0,
         title: _title(),
@@ -89,12 +101,16 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
 
   Widget _backButton(BuildContext context) {
     return ButtonIcon(
-        icon: Platform.isAndroid
-            ? FluentIcons.arrow_left_24_regular
-            : Symbols.arrow_back_ios_new_rounded,
-        onPressed: () {
-          Navigator.of(context).pop();
-        });
+        icon: widget.isFullScreenDialog
+            ? FluentIcons.dismiss_24_regular
+            : Platform.isAndroid
+                ? FluentIcons.arrow_left_24_regular
+                : Symbols.arrow_back_ios_new_rounded,
+        size: 24,
+        onPressed: widget.onAppBarBackButtonPressed ??
+            () {
+              Navigator.of(context).pop();
+            });
   }
 
   Widget _avatar(BuildContext context) {
@@ -115,7 +131,7 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
   Widget? _buildLeading(BuildContext context) {
     final canPop = Navigator.of(context).canPop();
 
-    if (canPop) {
+    if (canPop && widget.showAppBarBackButton) {
       var leading;
       if (appBarAvatarUrl != null || showAppBarAvatar) {
         leading = Row(

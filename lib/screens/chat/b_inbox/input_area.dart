@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/providers/chat/inbox/input_area.dart';
-import 'package:watfoe/screens/chat/b_inbox/media_picker.dart';
+import 'package:watfoe/screens/chat/b_inbox/media_picker/media_picker.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
 class InputArea extends ConsumerStatefulWidget {
@@ -52,59 +52,58 @@ class _InputAreaState extends ConsumerState<InputArea> {
   @override
   Widget build(BuildContext context) {
     final isEditing = ref.watch(isEditingProvider)[contactId] ?? false;
-
-    return AnimatedSize(
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeInOut,
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.black.withAlpha(16),
-              borderRadius: const BorderRadius.all(Radius.circular(25))),
-          padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            isEditing
-                ? _TextInputField(
-                    controller: messageController, contactId: contactId)
-                : const SizedBox(),
-            Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ButtonIcon(
-                    icon: FluentIcons.flash_sparkle_24_regular,
-                    fgcolor: colorNeutral7,
-                    onPressed: () {},
-                    tooltip: 'Watfoe Ai',
-                  ),
-                  Flexible(
-                      child: isEditing
-                          ? const Row()
-                          : _TextInputField(
-                              contactId: contactId,
-                            )),
-                  ButtonIcon(
-                    icon: FluentIcons.camera_24_regular,
-                    fgcolor: colorNeutral7,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => const MediaPickerScreen(),
-                        useSafeArea: false,
-                      );
-                    },
-                    tooltip: 'Take photo',
-                  ),
-                  ButtonIcon(
-                    icon: FluentIcons.add_circle_24_regular,
-                    fgcolor: colorNeutral7,
-                    onPressed: () {},
-                    tooltip: 'Add attachment',
-                  ),
-                  const Gap(3),
-                  _SendRecordButton(contactId: contactId),
-                ])
-          ]),
-        ));
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.black.withAlpha(16),
+          borderRadius: const BorderRadius.all(Radius.circular(25))),
+      padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
+      child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+        isEditing
+            ? _TextInputField(
+                controller: messageController, contactId: contactId)
+            : const SizedBox(),
+        Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ButtonIcon(
+                icon: FluentIcons.flash_sparkle_24_regular,
+                fgcolor: colorNeutral7,
+                onPressed: () {},
+                tooltip: 'Watfoe Ai',
+              ),
+              Flexible(
+                  child: isEditing
+                      ? const Row()
+                      : _TextInputField(
+                          contactId: contactId,
+                        )),
+              ButtonIcon(
+                icon: FluentIcons.camera_24_regular,
+                fgcolor: colorNeutral7,
+                onPressed: () {
+                  showBottomSheet(
+                      enableDrag: true,
+                      showDragHandle: true,
+                      context: context,
+                      backgroundColor: colorNeutral0,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero),
+                      builder: (context) => const MediaPickerScreen());
+                },
+                tooltip: 'Take photo',
+              ),
+              ButtonIcon(
+                icon: FluentIcons.add_circle_24_regular,
+                fgcolor: colorNeutral7,
+                onPressed: () {},
+                tooltip: 'Add attachment',
+              ),
+              const Gap(3),
+              _SendRecordButton(contactId: contactId),
+            ])
+      ]),
+    );
   }
 }
 
@@ -177,12 +176,11 @@ class _SendRecordButtonState extends ConsumerState<_SendRecordButton> {
 
   @override
   Widget build(BuildContext context) {
-    final value = ref.watch(textMessageValueProvider);
-    final isEditing = ref.watch(isEditingProvider)[contactId] ?? false;
+    final value = ref.watch(textMessageValueProvider)[contactId] ?? '';
 
     return ButtonIcon(
-      icon: value.isNotEmpty && isEditing
-          ? FluentIcons.play_24_regular
+      icon: value.isNotEmpty
+          ? FluentIcons.arrow_up_24_regular
           : Symbols.graphic_eq_rounded,
       onPressed: () {},
       bgcolor: Theme.of(context).colorScheme.primary,

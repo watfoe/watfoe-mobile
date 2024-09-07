@@ -29,6 +29,9 @@ class ButtonIcon extends StatelessWidget {
               fgcolor != null ? WidgetStateProperty.all<Color>(fgcolor!) : null,
         ),
         tooltip: tooltip,
-        icon: Icon(icon));
+        icon: Icon(
+          icon,
+          size: size,
+        ));
   }
 }
