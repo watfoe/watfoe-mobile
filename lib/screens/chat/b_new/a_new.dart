@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/components/scaffold.dart';
+import 'package:watfoe/models/chat.dart';
+import 'package:watfoe/providers/chat/chats.dart';
 import 'package:watfoe/providers/contacts.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
@@ -66,8 +68,8 @@ class _NewChat extends State<NewChat> {
                   constraints: const BoxConstraints(maxHeight: 40),
                   contentPadding: const EdgeInsets.symmetric(vertical: 5),
                   hintText: 'Search contacts',
-                  hintStyle: TextStyle(color: colorNeutral7),
-                  prefixIcon: Icon(
+                  hintStyle: const TextStyle(color: colorNeutral7),
+                  prefixIcon: const Icon(
                     FluentIcons.search_24_regular,
                     size: 20,
                   ),
@@ -165,8 +167,11 @@ class _ContactListState extends ConsumerState<ContactList> {
     if (!handled) {
       // User should be redirected to the empty/all chat screen
       // after navigating from the message screen
-      Navigator.pushReplacementNamed(context, 'chat/inbox/person',
-          arguments: contact);
+      ref
+          .read(chatsProvider.notifier)
+          .addChat(Chat(id: contact.id, contactId: contact.id));
+      setCurrentChat(ref, contact.id);
+      Navigator.pushReplacementNamed(context, 'chat/inbox/person');
     }
   }
 

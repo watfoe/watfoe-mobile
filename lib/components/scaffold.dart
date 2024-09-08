@@ -132,7 +132,7 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
     final canPop = Navigator.of(context).canPop();
 
     if (canPop && widget.showAppBarBackButton) {
-      var leading;
+      Row leading;
       if (appBarAvatarUrl != null || showAppBarAvatar) {
         leading = Row(
           children: [
@@ -162,15 +162,14 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
     }
 
     if (widget.appBarTitle != null) {
-      return Expanded(
-          child: Text(
+      return Text(
         widget.appBarTitle!,
         style: TextStyle(
             color: Theme.of(context).primaryColor,
             fontSize: 18,
             fontWeight: FontWeight.w500),
         overflow: TextOverflow.ellipsis,
-      ));
+      );
     }
 
     return null;

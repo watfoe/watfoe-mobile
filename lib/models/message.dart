@@ -77,10 +77,9 @@ class Message {
   final DateTime? deliveredAt;
   final DateTime? readAt;
   final String? text;
-
-  MessageState state;
-  MessageAttachment? attachment;
-  MessageMeta? meta;
+  final MessageState state;
+  final MessageAttachment? attachment;
+  final MessageMeta? meta;
 
   Message(
       {required this.id,
@@ -94,19 +93,30 @@ class Message {
       this.meta,
       this.attachment});
 
-  void updateState(MessageState state) {
-    this.state = state;
+  Message copyWith({
+    MessageState? state,
+    DateTime? sentAt,
+    DateTime? deliveredAt,
+    DateTime? readAt,
+    String? text,
+    MessageAttachment? attachment,
+    MessageMeta? meta,
+  }) {
+    return Message(
+      id: id,
+      type: type,
+      state: state ?? this.state,
+      createdAt: createdAt,
+      sentAt: sentAt ?? this.sentAt,
+      deliveredAt: deliveredAt ?? this.deliveredAt,
+      readAt: readAt ?? this.readAt,
+      text: text ?? this.text,
+      attachment: attachment ?? this.attachment,
+      meta: meta ?? this.meta,
+    );
   }
 
-  void updateEdited(bool isEdited) {
-    if (meta == null) {
-      meta = MessageMeta(isEdited: isEdited);
-    } else {
-      meta!.isEdited = isEdited;
-    }
-  }
-
-  static Message fromJson(Map<String, dynamic> json) {
+  factory Message.fromJson(Map<String, dynamic> json) {
     const stateMap = {
       'queued': MessageState.queued,
       'sending': MessageState.sending,

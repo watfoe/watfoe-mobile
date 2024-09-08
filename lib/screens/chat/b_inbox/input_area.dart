@@ -4,37 +4,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:watfoe/components/button/button.dart';
-import 'package:watfoe/providers/chat/inbox/input_area.dart';
+import 'package:watfoe/models/message.dart';
+import 'package:watfoe/providers/chat/chats.dart';
 import 'package:watfoe/screens/chat/b_inbox/media_picker/media_picker.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
 class InputArea extends ConsumerStatefulWidget {
-  const InputArea({super.key, required this.contactId});
+  const InputArea({super.key, required this.chatId});
 
-  final String contactId;
+  final String chatId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _InputAreaState();
 }
 
 class _InputAreaState extends ConsumerState<InputArea> {
-  TextEditingController? messageController;
+  TextEditingController messageController = TextEditingController();
 
-  String get contactId => widget.contactId;
+  String get chatId => widget.chatId;
 
   @override
   initState() {
     super.initState();
 
-    // If the user has already typed a message to this contact, restore it
-    messageController = TextEditingController(
-      text: ref.read(textMessageValueProvider).containsKey(contactId)
-          ? ref.read(textMessageValueProvider)[contactId]
-          : '',
-    );
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      messageController!.addListener(() {
+      messageController.addListener(() {
         final value = messageController!.text;
         // final lines = value.split('\n');
         // if (lines.length > 1) {
@@ -43,24 +37,26 @@ class _InputAreaState extends ConsumerState<InputArea> {
         //   });
         // }
         ref
-            .read(textMessageValueProvider.notifier)
-            .setValue({contactId: value});
+            .read(chatsProvider.notifier)
+            .updateChat(widget.chatId, draft: value);
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = ref.watch(isEditingProvider)[contactId] ?? false;
+    final isTyping = ref.watch(
+            chatProvider(widget.chatId).select((chat) => chat?.isTyping)) ??
+        false;
+
     return Container(
       decoration: BoxDecoration(
           color: Colors.black.withAlpha(16),
           borderRadius: const BorderRadius.all(Radius.circular(25))),
       padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
       child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        isEditing
-            ? _TextInputField(
-                controller: messageController, contactId: contactId)
+        isTyping
+            ? _TextInputField(controller: messageController, chatId: chatId)
             : const SizedBox(),
         Row(
             mainAxisSize: MainAxisSize.min,
@@ -73,10 +69,10 @@ class _InputAreaState extends ConsumerState<InputArea> {
                 tooltip: 'Watfoe Ai',
               ),
               Flexible(
-                  child: isEditing
+                  child: isTyping
                       ? const Row()
                       : _TextInputField(
-                          contactId: contactId,
+                          chatId: chatId,
                         )),
               ButtonIcon(
                 icon: FluentIcons.camera_24_regular,
@@ -100,7 +96,7 @@ class _InputAreaState extends ConsumerState<InputArea> {
                 tooltip: 'Add attachment',
               ),
               const Gap(3),
-              _SendRecordButton(contactId: contactId),
+              _SendRecordButton(chatId: chatId),
             ])
       ]),
     );
@@ -108,9 +104,9 @@ class _InputAreaState extends ConsumerState<InputArea> {
 }
 
 class _TextInputField extends ConsumerStatefulWidget {
-  const _TextInputField({required this.contactId, this.controller});
+  const _TextInputField({required this.chatId, this.controller});
 
-  final String contactId;
+  final String chatId;
   final TextEditingController? controller;
 
   @override
@@ -120,22 +116,26 @@ class _TextInputField extends ConsumerStatefulWidget {
 class _TextInputFieldState extends ConsumerState<_TextInputField> {
   TextEditingController? get controller => widget.controller;
 
-  String get contactId => widget.contactId;
-
   @override
   Widget build(BuildContext context) {
-    final isEditing = ref.watch(isEditingProvider)[contactId] ?? false;
+    final isTyping = ref.watch(
+            chatProvider(widget.chatId).select((chat) => chat?.isTyping)) ??
+        false;
+
+    controller?.text =
+        ref.watch(chatProvider(widget.chatId).select((chat) => chat?.draft)) ??
+            '';
 
     return TextField(
-      autofocus: isEditing,
+      autofocus: isTyping,
       controller: controller,
       cursorHeight: 16,
       keyboardType: TextInputType.multiline,
-      maxLines: isEditing ? 1 : 1,
+      maxLines: isTyping ? 1 : 1,
       decoration: InputDecoration(
           hintText: 'Message',
           isDense: true,
-          contentPadding: EdgeInsets.fromLTRB(isEditing ? 17 : 0, 25, 0, 0),
+          contentPadding: EdgeInsets.fromLTRB(isTyping ? 17 : 0, 25, 0, 0),
           hintStyle: const TextStyle(
               color: colorNeutral7, fontWeight: FontWeight.w400),
           border: OutlineInputBorder(
@@ -148,13 +148,31 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
         fontSize: 18,
       ),
       onTap: () {
-        if (!isEditing) {
-          ref.read(isEditingProvider.notifier).toggleOn(contactId);
+        if (!isTyping) {
+          ref
+              .read(chatsProvider.notifier)
+              .updateChat(widget.chatId, isTyping: true);
         }
       },
       onTapOutside: (_) {
-        if (isEditing && controller != null && controller!.text.isEmpty) {
-          ref.read(isEditingProvider.notifier).toggleOff(contactId);
+        if (isTyping && controller != null && controller!.text.isEmpty) {
+          ref
+              .read(chatsProvider.notifier)
+              .updateChat(widget.chatId, isTyping: false);
+        }
+      },
+      onSubmitted: (value) {
+        if (value.isNotEmpty) {
+          controller?.clear();
+          ref.read(chatsProvider.notifier).addMessage(
+              widget.chatId,
+              Message(
+                id: DateTime.now().toIso8601String(),
+                type: MessageType.outgoing,
+                state: MessageState.queued,
+                text: value,
+                createdAt: DateTime.now(),
+              ));
         }
       },
     );
@@ -162,9 +180,9 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
 }
 
 class _SendRecordButton extends ConsumerStatefulWidget {
-  const _SendRecordButton({required this.contactId});
+  const _SendRecordButton({required this.chatId});
 
-  final String contactId;
+  final String chatId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -172,20 +190,20 @@ class _SendRecordButton extends ConsumerStatefulWidget {
 }
 
 class _SendRecordButtonState extends ConsumerState<_SendRecordButton> {
-  String get contactId => widget.contactId;
-
   @override
   Widget build(BuildContext context) {
-    final value = ref.watch(textMessageValueProvider)[contactId] ?? '';
+    final draft =
+        ref.watch(chatProvider(widget.chatId).select((chat) => chat?.draft));
+    final hasDraft = draft?.isNotEmpty ?? false;
 
     return ButtonIcon(
-      icon: value.isNotEmpty
+      icon: hasDraft
           ? FluentIcons.arrow_up_24_regular
           : Symbols.graphic_eq_rounded,
       onPressed: () {},
       bgcolor: Theme.of(context).colorScheme.primary,
       fgcolor: Theme.of(context).colorScheme.onPrimary,
-      tooltip: value.isEmpty ? 'Record voice' : 'Send message',
+      tooltip: hasDraft ? 'Send message' : 'Record voice',
     );
   }
 }

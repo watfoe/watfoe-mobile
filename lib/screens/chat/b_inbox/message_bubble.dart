@@ -7,17 +7,16 @@ import 'package:watfoe/components/linkpreview/linkpreviewer.dart';
 import 'package:watfoe/models/message.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
-class MessageContainer extends ConsumerStatefulWidget {
-  const MessageContainer({super.key, required this.message});
+class MessageBubble extends ConsumerStatefulWidget {
+  const MessageBubble({super.key, required this.message});
 
   final Message message;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _MessageContainerState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MessageBubbleState();
 }
 
-class _MessageContainerState extends ConsumerState<MessageContainer> {
+class _MessageBubbleState extends ConsumerState<MessageBubble> {
   Message get message => widget.message;
 
   @override
