@@ -1,21 +1,33 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/components/scaffold.dart';
+import 'package:watfoe/models/chat.dart';
+import 'package:watfoe/providers/chat/chats.dart';
 
-class Chat extends StatefulWidget {
-  const Chat({super.key});
+class AllChatsPreview extends ConsumerStatefulWidget {
+  const AllChatsPreview({super.key});
 
   @override
-  State<Chat> createState() => _ChatState();
+  ConsumerState<AllChatsPreview> createState() => _AllChatsPreviewState();
 }
 
-class _ChatState extends State<Chat> {
+class _AllChatsPreviewState extends ConsumerState<AllChatsPreview> {
   int currentPageIndex = 0;
+
+  List<Chat> _chats = [];
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chats = ref.watch(chatsProvider);
+      if (chats.isEmpty) {
+        Navigator.pushReplacementNamed(context, 'chat/empty');
+      }
+    });
+
     return WatfoeScaffold(
       appBarTitle: 'Chat',
       appBarActions: [
