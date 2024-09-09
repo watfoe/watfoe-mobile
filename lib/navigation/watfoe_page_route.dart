@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class WatfoePageRoute extends MaterialPageRoute {
   @override
   Duration get transitionDuration =>
-      Duration(milliseconds: Platform.isAndroid ? 55 : 250);
+      Duration(milliseconds: Platform.isAndroid ? 13 : 250);
 
   WatfoePageRoute(
       {required super.builder,

@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watfoe/models/message.dart';
 import 'package:watfoe/providers/chat/chats.dart';
-import 'package:watfoe/screens/chat/b_inbox/message_bubble.dart';
+import 'package:watfoe/screens/chat/b_inbox/c_message_bubble.dart';
 
 class MessagesArea extends ConsumerStatefulWidget {
   const MessagesArea({super.key, required this.chatId});
@@ -19,45 +21,48 @@ class _MessagesAreaState extends ConsumerState<MessagesArea> {
       GlobalKey<SliverAnimatedListState>();
   final ScrollController _scrollController = ScrollController();
   List<Message> _messages = [];
-  bool _autoScroll = true;
+  bool canScroll = false;
+  Timer? _scrollTimer;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    _scrollController.addListener(_debouncedScrollListener);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
+    _scrollTimer?.cancel();
+    _scrollController.removeListener(_debouncedScrollListener);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _scrollListener() {
-    if (_scrollController.position.atEdge) {
-      if (_scrollController.position.pixels == 0) {
-        // User has scrolled to the top
+  void _debouncedScrollListener() {
+    if (_scrollTimer?.isActive ?? false) {
+      _scrollTimer!.cancel();
+    }
+    ;
+
+    _scrollTimer = Timer(const Duration(milliseconds: 100), () {
+      if (_scrollController.offset > 613) {
         setState(() {
-          _autoScroll = false;
+          canScroll = true;
         });
       } else {
-        // User has scrolled to the bottom
         setState(() {
-          _autoScroll = true;
+          canScroll = false;
         });
       }
-    }
+    });
   }
 
   void _scrollToBottom() {
-    if (_autoScroll) {
-      _scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
@@ -68,7 +73,6 @@ class _MessagesAreaState extends ConsumerState<MessagesArea> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateList(newMessages);
-      _scrollToBottom();
     });
 
     return Stack(
@@ -87,8 +91,7 @@ class _MessagesAreaState extends ConsumerState<MessagesArea> {
             ),
           ],
         ),
-        if (!_autoScroll)
-          _buildScrollToBottomButton(_autoScroll, _scrollToBottom),
+        if (canScroll) _buildScrollToBottomButton(_scrollToBottom),
       ],
     );
   }
@@ -118,21 +121,21 @@ class _MessagesAreaState extends ConsumerState<MessagesArea> {
           oldMessages.length - 1 - i,
           (context, animation) => _buildAnimatedItem(
               removedMessage, animation.drive(Tween(begin: 1.0, end: 0.0))),
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 200),
         );
       }
     }
 
     if (oldMessages.isEmpty) {
       _listKey.currentState?.insertAllItems(0, _messages.length,
-          duration: const Duration(milliseconds: 300));
+          duration: const Duration(milliseconds: 150));
     } else {
       // Handle inserts
       for (var i = 0; i < _messages.length; i++) {
         if (!oldMessages.contains(_messages[i])) {
           _listKey.currentState?.insertItem(
             _messages.length - 1 - i,
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 200),
           );
         }
       }
@@ -140,7 +143,7 @@ class _MessagesAreaState extends ConsumerState<MessagesArea> {
   }
 }
 
-Widget _buildScrollToBottomButton(bool autoScroll, Function() onPressed) {
+Widget _buildScrollToBottomButton(Function() onPressed) {
   return Positioned(
     bottom: 13,
     left: 0,

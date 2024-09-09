@@ -7,17 +7,17 @@ import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/components/scaffold.dart';
 import 'package:watfoe/models/chat.dart';
 import 'package:watfoe/providers/chat/chats.dart';
-import 'package:watfoe/providers/contacts.dart';
+import 'package:watfoe/providers/users.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
-class NewChat extends StatefulWidget {
-  const NewChat({super.key});
+class NewChatScreen extends StatefulWidget {
+  const NewChatScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _NewChat();
+  State<StatefulWidget> createState() => _NewChatScreen();
 }
 
-class _NewChat extends State<NewChat> {
+class _NewChatScreen extends State<NewChatScreen> {
   List<String> selectedContacts = [];
   bool searchBarVisible = false;
 
@@ -171,34 +171,32 @@ class _ContactListState extends ConsumerState<ContactList> {
           .read(chatsProvider.notifier)
           .addChat(Chat(id: contact.id, contactId: contact.id));
       setCurrentChat(ref, contact.id);
-      Navigator.pushReplacementNamed(context, 'chat/inbox/person');
+      Navigator.pushReplacementNamed(context, 'chat/person');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final contactsFut = ref.watch(contactsProvider);
+    final (userIdsInContacts, otherUserIds, contacts) =
+        ref.watch(interpolatedUsersAndContactsProvider);
 
-    return contactsFut.when(
-        data: (contacts) => ListView.builder(
-              itemCount: contacts.length,
-              itemBuilder: (BuildContext context, int index) {
-                final contact = contacts[index];
-                return MaterialButton(
-                    splashColor: Colors.black.withAlpha(13),
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      _onPressed(contact);
-                    },
-                    onLongPress: () {
-                      _selectContact(contact.id);
-                    },
-                    child: _buildContactItem(context, contact,
-                        selectedContacts.contains(contact.id)));
-              },
-            ),
-        error: (error, _) => Container(),
-        loading: () => Container());
+    return ListView.builder(
+      itemCount: contacts.length,
+      itemBuilder: (BuildContext context, int index) {
+        final contact = contacts[index];
+        return MaterialButton(
+            splashColor: Colors.black.withAlpha(13),
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              _onPressed(contact);
+            },
+            onLongPress: () {
+              _selectContact(contact.id);
+            },
+            child: _buildContactItem(
+                context, contact, selectedContacts.contains(contact.id)));
+      },
+    );
   }
 }
 
@@ -220,7 +218,7 @@ Widget _buildContactItem(BuildContext context, Contact contact, bool selected) {
         fontSize: 15,
         height: 1),
     leading: Avatar(
-      radius: 20,
+      radius: 21,
     ),
     trailing: selected
         ? Container(

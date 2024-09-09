@@ -1,7 +1,9 @@
 import 'package:watfoe/models/message.dart';
 
+typedef ChatId = String;
+
 class Chat {
-  final String id;
+  final ChatId id;
   final String contactId;
   final List<Message> messages;
   final bool isTyping;
@@ -23,7 +25,7 @@ class Chat {
     this.isArchived = false,
   });
 
-  factory Chat.fromJson(Map<String, dynamic> json) {
+  factory Chat.fromJson(Map<ChatId, dynamic> json) {
     return Chat(
       id: json['id'],
       contactId: json['contactId'],
@@ -55,5 +57,12 @@ class Chat {
       isPinned: isPinned ?? this.isPinned,
       isArchived: isArchived ?? this.isArchived,
     );
+  }
+
+  Message? get lastMessage {
+    if (messages.isEmpty) {
+      return null;
+    }
+    return messages.last;
   }
 }

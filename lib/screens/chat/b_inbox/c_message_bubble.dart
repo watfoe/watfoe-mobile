@@ -1,7 +1,7 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:watfoe/components/linkpreview/linkpreviewer.dart';
 import 'package:watfoe/models/message.dart';
@@ -30,8 +30,7 @@ class _MessageBubbleState extends ConsumerState<MessageBubble> {
             children: [
               ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.8,
-                  ),
+                      maxWidth: MediaQuery.of(context).size.width * 0.8),
                   child: GestureDetector(
                       onDoubleTap: () {
                         // Like the message
@@ -43,9 +42,11 @@ class _MessageBubbleState extends ConsumerState<MessageBubble> {
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: message.type == MessageType.incoming
-                              ? colorPrimary6.withAlpha(44)
-                              : Colors.black.withAlpha(16),
+                          color: message.state == MessageState.failed
+                              ? colorDanger6.withAlpha(44)
+                              : message.type == MessageType.incoming
+                                  ? colorPrimary6.withAlpha(44)
+                                  : Colors.black.withAlpha(16),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: message.attachment == null
@@ -58,20 +59,21 @@ class _MessageBubbleState extends ConsumerState<MessageBubble> {
                                 ],
                               ),
                       ))),
-              message.type == MessageType.incoming
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 10, top: 5),
-                      child: _buildMessageTime())
-                  : Padding(
-                      padding: const EdgeInsets.only(right: 10, top: 2),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            _buildMessageTime(),
-                            const Gap(5),
-                            _buildMessageStateIcon(),
-                            // _buildStateIcon()
-                          ])),
+              if (message == MessageType.incoming)
+                Padding(
+                    padding: const EdgeInsets.only(left: 10, top: 5),
+                    child: _buildMessageTime())
+              else
+                Padding(
+                    padding: const EdgeInsets.only(right: 8, top: 2),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          _buildMessageTime(),
+                          const Gap(3),
+                          _buildMessageStateIcon(),
+                          // _buildStateIcon()
+                        ])),
             ]));
   }
 
@@ -89,10 +91,8 @@ class _MessageBubbleState extends ConsumerState<MessageBubble> {
   }
 
   Widget _buildMessageTime() {
-    final time = DateFormat.jm().format(message.createdAt).toLowerCase();
-
     return Text(
-      time,
+      message.createdAtFormatted,
       style: const TextStyle(
           color: colorNeutral7,
           fontSize: 11,
@@ -105,18 +105,20 @@ class _MessageBubbleState extends ConsumerState<MessageBubble> {
     switch (message.state) {
       case MessageState.sent:
         return const Icon(Symbols.check_rounded,
-            color: colorNeutral7, size: 16);
+            color: colorNeutral7, size: 12);
       case MessageState.failed:
-        return const Icon(Symbols.error_rounded, color: colorDanger6, size: 15);
+        return const Icon(Symbols.error_circle_rounded_error_rounded,
+            color: colorDanger6, size: 12);
       case MessageState.unread:
         return const Icon(Symbols.done_all_rounded,
-            color: colorNeutral6, size: 16);
+            color: colorNeutral7, size: 12);
       case MessageState.read:
         return const Icon(Symbols.done_all_rounded, size: 16);
       case MessageState.queued:
       case MessageState.sending:
       default:
-        return const Icon(Icons.access_time, color: colorNeutral6, size: 16);
+        return const Icon(FluentIcons.clock_16_regular,
+            color: colorNeutral6, size: 12);
     }
   }
 

@@ -38,9 +38,25 @@ class _InputAreaState extends ConsumerState<InputArea> {
         // }
         ref
             .read(chatsProvider.notifier)
-            .updateChat(widget.chatId, draft: value);
+            .updateChat(widget.chatId, (chat) => chat.copyWith(draft: value));
       });
     });
+  }
+
+  _onSend() {
+    final value = messageController.text;
+    if (value.isNotEmpty) {
+      messageController.clear();
+      ref.read(chatsProvider.notifier).addMessage(
+          widget.chatId,
+          Message(
+            id: DateTime.now().toIso8601String(),
+            type: MessageType.outgoing,
+            state: MessageState.queued,
+            text: value,
+            createdAt: DateTime.now(),
+          ));
+    }
   }
 
   @override
@@ -56,7 +72,8 @@ class _InputAreaState extends ConsumerState<InputArea> {
       padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
       child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         isTyping
-            ? _TextInputField(controller: messageController, chatId: chatId)
+            ? _TextInputField(
+                controller: messageController, chatId: chatId, onSend: _onSend)
             : const SizedBox(),
         Row(
             mainAxisSize: MainAxisSize.min,
@@ -96,7 +113,7 @@ class _InputAreaState extends ConsumerState<InputArea> {
                 tooltip: 'Add attachment',
               ),
               const Gap(3),
-              _SendRecordButton(chatId: chatId),
+              _SendRecordButton(chatId: chatId, onSend: _onSend),
             ])
       ]),
     );
@@ -104,10 +121,11 @@ class _InputAreaState extends ConsumerState<InputArea> {
 }
 
 class _TextInputField extends ConsumerStatefulWidget {
-  const _TextInputField({required this.chatId, this.controller});
+  const _TextInputField({required this.chatId, this.controller, this.onSend});
 
   final String chatId;
   final TextEditingController? controller;
+  final void Function()? onSend;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TextInputFieldState();
@@ -149,30 +167,19 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
       ),
       onTap: () {
         if (!isTyping) {
-          ref
-              .read(chatsProvider.notifier)
-              .updateChat(widget.chatId, isTyping: true);
+          ref.read(chatsProvider.notifier).updateChat(
+              widget.chatId, (chat) => chat.copyWith(isTyping: true));
         }
       },
       onTapOutside: (_) {
         if (isTyping && controller != null && controller!.text.isEmpty) {
-          ref
-              .read(chatsProvider.notifier)
-              .updateChat(widget.chatId, isTyping: false);
+          ref.read(chatsProvider.notifier).updateChat(
+              widget.chatId, (chat) => chat.copyWith(isTyping: false));
         }
       },
-      onSubmitted: (value) {
-        if (value.isNotEmpty) {
-          controller?.clear();
-          ref.read(chatsProvider.notifier).addMessage(
-              widget.chatId,
-              Message(
-                id: DateTime.now().toIso8601String(),
-                type: MessageType.outgoing,
-                state: MessageState.queued,
-                text: value,
-                createdAt: DateTime.now(),
-              ));
+      onSubmitted: (_) {
+        if (widget.onSend != null) {
+          widget.onSend!();
         }
       },
     );
@@ -180,9 +187,10 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
 }
 
 class _SendRecordButton extends ConsumerStatefulWidget {
-  const _SendRecordButton({required this.chatId});
+  const _SendRecordButton({required this.chatId, required this.onSend});
 
   final String chatId;
+  final void Function() onSend;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -200,7 +208,11 @@ class _SendRecordButtonState extends ConsumerState<_SendRecordButton> {
       icon: hasDraft
           ? FluentIcons.arrow_up_24_regular
           : Symbols.graphic_eq_rounded,
-      onPressed: () {},
+      onPressed: () {
+        if (hasDraft) {
+          widget.onSend();
+        } else {}
+      },
       bgcolor: Theme.of(context).colorScheme.primary,
       fgcolor: Theme.of(context).colorScheme.onPrimary,
       tooltip: hasDraft ? 'Send message' : 'Record voice',

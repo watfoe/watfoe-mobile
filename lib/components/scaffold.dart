@@ -85,9 +85,9 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
         leadingWidth: canPop
             ? _hasAvatar()
                 ? 85
-                : 51
+                : 53
             : _hasAvatar()
-                ? 48
+                ? 53
                 : 0,
         leading: _buildLeading(context),
         flexibleSpace: widget.appBarFlexibleSpace,
@@ -119,7 +119,7 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
     }
 
     return Avatar(
-      radius: 17,
+      radius: 15,
       url: appBarAvatarUrl,
     );
   }

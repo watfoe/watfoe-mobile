@@ -1,4 +1,5 @@
 import 'package:flutter_contacts/contact.dart';
+import 'package:intl/intl.dart';
 
 enum MessageState { queued, sending, sent, failed, unread, read }
 
@@ -146,5 +147,9 @@ class Message {
     );
 
     return message;
+  }
+
+  String get createdAtFormatted {
+    return DateFormat.jm().format(createdAt).toLowerCase();
   }
 }
