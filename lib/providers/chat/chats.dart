@@ -10,12 +10,20 @@ final chatsProvider =
 class _ChatsNotifier extends StateNotifier<Map<String, Chat>> {
   _ChatsNotifier() : super({});
 
-  void addChat(Chat chat) {
+  ChatId addChat(Chat chat) {
     if (state.containsKey(chat.id)) {
-      return;
+      return chat.id;
     }
 
-    state = {...state, chat.id: chat};
+    chat = state.values.firstWhere(
+      (_chat) => _chat.contactId == chat.contactId,
+      orElse: () {
+        state = {...state, chat.id: chat};
+        return chat;
+      },
+    );
+
+    return chat.id;
   }
 
   void updateChat(ChatId chatId, Chat Function(Chat) update) {
@@ -25,7 +33,7 @@ class _ChatsNotifier extends StateNotifier<Map<String, Chat>> {
   }
 
   void removeChat(String chatId) {
-    final newState = Map<String, Chat>.from(state);
+    final newState = Map<ChatId, Chat>.from(state);
     newState.remove(chatId);
     state = newState;
   }

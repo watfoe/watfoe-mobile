@@ -17,7 +17,6 @@ dependencies:
   fluentui_system_icons: ^1.1.252
   cached_network_image: ^3.4.1
   permission_handler: ^11.3.1
-  flutter_contacts: ^1.1.9+2
   dio: ^5.6.0
   flutter_riverpod: ^2.5.1
   intl: ^0.19.0
@@ -27,13 +26,15 @@ dependencies:
   video_player: ^2.9.1
   camera: ^0.11.0+2
   mime: ^1.0.6
+  contacts_service: ^0.6.3
+  flutter_libphonenumber: ^2.3.3
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^3.0.0
-  riverpod_generator: ^2.4.3
+  flutter_lints: ^4.0.0
   build_runner: ^2.4.12
   custom_lint: ^0.6.5
   riverpod_lint: ^2.3.13

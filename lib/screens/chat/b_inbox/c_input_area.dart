@@ -29,7 +29,7 @@ class _InputAreaState extends ConsumerState<InputArea> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       messageController.addListener(() {
-        final value = messageController!.text;
+        final value = messageController.text;
         // final lines = value.split('\n');
         // if (lines.length > 1) {
         //   setState(() {
@@ -153,7 +153,7 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
       decoration: InputDecoration(
           hintText: 'Message',
           isDense: true,
-          contentPadding: EdgeInsets.fromLTRB(isTyping ? 17 : 0, 25, 0, 0),
+          contentPadding: EdgeInsets.fromLTRB(isTyping ? 17 : 0, 25, 13, 0),
           hintStyle: const TextStyle(
               color: colorNeutral7, fontWeight: FontWeight.w400),
           border: OutlineInputBorder(

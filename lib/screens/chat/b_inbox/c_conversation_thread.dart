@@ -42,7 +42,6 @@ class _MessagesAreaState extends ConsumerState<MessagesArea> {
     if (_scrollTimer?.isActive ?? false) {
       _scrollTimer!.cancel();
     }
-    ;
 
     _scrollTimer = Timer(const Duration(milliseconds: 100), () {
       if (_scrollController.offset > 613) {

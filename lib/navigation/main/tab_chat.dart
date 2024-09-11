@@ -6,7 +6,7 @@ import 'package:watfoe/screens/chat/a_chats/s_all_chats_preview.dart';
 import 'package:watfoe/screens/chat/a_empty/empty.dart';
 import 'package:watfoe/screens/chat/b_inbox/s_conversation_group.dart';
 import 'package:watfoe/screens/chat/b_inbox/s_conversation_person.dart';
-import 'package:watfoe/screens/chat/s_new_chat.dart';
+import 'package:watfoe/screens/chat/new_chat/s_new_chat.dart';
 
 class ChatTabNavigator extends ConsumerWidget {
   const ChatTabNavigator({super.key, required this.navigatorKey});

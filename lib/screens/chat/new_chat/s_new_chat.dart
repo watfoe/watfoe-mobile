@@ -1,23 +1,21 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/components/scaffold.dart';
-import 'package:watfoe/models/chat.dart';
-import 'package:watfoe/providers/chat/chats.dart';
 import 'package:watfoe/providers/users.dart';
+import 'package:watfoe/screens/chat/new_chat/c_other_local_contacts_list.dart';
+import 'package:watfoe/screens/chat/new_chat/c_watfoe_user_list.dart';
 import 'package:watfoe/theme/color_scheme.dart';
 
-class NewChatScreen extends StatefulWidget {
+class NewChatScreen extends ConsumerStatefulWidget {
   const NewChatScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _NewChatScreen();
+  ConsumerState<ConsumerStatefulWidget> createState() => _NewChatScreen();
 }
 
-class _NewChatScreen extends State<NewChatScreen> {
+class _NewChatScreen extends ConsumerState<NewChatScreen> {
   List<String> selectedContacts = [];
   bool searchBarVisible = false;
 
@@ -57,6 +55,9 @@ class _NewChatScreen extends State<NewChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final (contactUserIdsInWatfoe, userIds, contactToInvite) =
+        ref.watch(interpolatedUsersAndContactsProvider);
+
     return WatfoeScaffold(
       appBarTitle: selectedContacts.isNotEmpty
           ? selectedContacts.length.toString()
@@ -100,8 +101,29 @@ class _NewChatScreen extends State<NewChatScreen> {
                 ]
               : [],
       onAppBarBackButtonPressed: _onAppBarBackButtonPressed,
-      body: ContactList(
-          selectedContacts: selectedContacts, selectContact: _selectContact),
+      body: CustomScrollView(
+        slivers: [
+          if (contactUserIdsInWatfoe.isNotEmpty)
+            _buildTitle(context, 'Contacts in Watfoe'),
+          WatfoeUserList(
+              userIds: contactUserIdsInWatfoe,
+              selectedContacts: selectedContacts,
+              selectContact: _selectContact),
+          if (userIds.isNotEmpty)
+            _buildTitle(context, 'Friends from Sosol', topPadding: 13),
+          WatfoeUserList(
+            userIds: userIds,
+            selectedContacts: selectedContacts,
+            selectContact: _selectContact,
+          ),
+          if (contactToInvite.isNotEmpty)
+            _buildTitle(context, 'Invite to Watfoe', topPadding: 13),
+          OtherLocalContactsList(
+            contacts: contactToInvite,
+            selectContact: _selectContact,
+          )
+        ],
+      ),
       persistentFooterButtons: selectedContacts.isNotEmpty
           ? [
               Row(
@@ -121,6 +143,20 @@ class _NewChatScreen extends State<NewChatScreen> {
     );
   }
 
+  Widget _buildTitle(BuildContext context, String title,
+      {double topPadding = 0}) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.only(left: 13, top: topPadding),
+        child: Text(title,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            )),
+      ),
+    );
+  }
+
   Widget _buildFooterButton(
       BuildContext context, String text, Function() onPressed) {
     return SizedBox(
@@ -132,106 +168,4 @@ class _NewChatScreen extends State<NewChatScreen> {
                   const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
     );
   }
-}
-
-class ContactList extends ConsumerStatefulWidget {
-  const ContactList(
-      {super.key, required this.selectedContacts, required this.selectContact});
-
-  final List<String> selectedContacts;
-  final Function(String) selectContact;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ContactListState();
-}
-
-class _ContactListState extends ConsumerState<ContactList> {
-  List<String> get selectedContacts => widget.selectedContacts;
-
-  Function(String) get _selectContact => widget.selectContact;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  _onPressed(Contact contact) {
-    var handled = false;
-    setState(() {
-      if (selectedContacts.isNotEmpty) {
-        _selectContact(contact.id);
-        handled = true;
-      }
-    });
-
-    if (!handled) {
-      // User should be redirected to the empty/all chat screen
-      // after navigating from the message screen
-      ref
-          .read(chatsProvider.notifier)
-          .addChat(Chat(id: contact.id, contactId: contact.id));
-      setCurrentChat(ref, contact.id);
-      Navigator.pushReplacementNamed(context, 'chat/person');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final (userIdsInContacts, otherUserIds, contacts) =
-        ref.watch(interpolatedUsersAndContactsProvider);
-
-    return ListView.builder(
-      itemCount: contacts.length,
-      itemBuilder: (BuildContext context, int index) {
-        final contact = contacts[index];
-        return MaterialButton(
-            splashColor: Colors.black.withAlpha(13),
-            padding: const EdgeInsets.all(0),
-            onPressed: () {
-              _onPressed(contact);
-            },
-            onLongPress: () {
-              _selectContact(contact.id);
-            },
-            child: _buildContactItem(
-                context, contact, selectedContacts.contains(contact.id)));
-      },
-    );
-  }
-}
-
-Widget _buildContactItem(BuildContext context, Contact contact, bool selected) {
-  return ListTile(
-    contentPadding: const EdgeInsets.fromLTRB(8, 0, 13, 0),
-    title: Text(contact.displayName),
-    titleTextStyle: TextStyle(
-        color: selected
-            ? Theme.of(context).colorScheme.onPrimaryContainer
-            : Theme.of(context).colorScheme.primary,
-        fontSize: 16,
-        height: 1),
-    subtitle: const Text('Some tagline over here'),
-    subtitleTextStyle: TextStyle(
-        color: selected
-            ? Theme.of(context).colorScheme.onPrimaryContainer
-            : colorNeutral7,
-        fontSize: 15,
-        height: 1),
-    leading: Avatar(
-      radius: 21,
-    ),
-    trailing: selected
-        ? Container(
-            padding: const EdgeInsets.all(3),
-            // Make it rounded
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primary),
-            child: Icon(FluentIcons.checkmark_16_regular,
-                color: Theme.of(context).colorScheme.onPrimary, size: 16),
-          )
-        : null,
-    selectedTileColor: Colors.black.withAlpha(21),
-    selected: selected,
-  );
 }

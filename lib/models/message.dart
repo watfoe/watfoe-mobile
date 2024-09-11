@@ -1,4 +1,4 @@
-import 'package:flutter_contacts/contact.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:intl/intl.dart';
 
 enum MessageState { queued, sending, sent, failed, unread, read }

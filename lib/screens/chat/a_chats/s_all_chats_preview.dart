@@ -6,6 +6,7 @@ import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/components/button/button.dart';
 import 'package:watfoe/components/scaffold.dart';
 import 'package:watfoe/providers/chat/chats.dart';
+import 'package:watfoe/providers/users.dart';
 
 class AllChatsPreviewScreen extends ConsumerStatefulWidget {
   const AllChatsPreviewScreen({super.key});
@@ -91,12 +92,13 @@ class _ChatItem extends ConsumerWidget {
 
   _onPressed(BuildContext context, WidgetRef ref, String chatId) {
     setCurrentChat(ref, chatId);
-    Navigator.pushNamed(context, 'chat/inbox/person');
+    Navigator.pushNamed(context, 'chat/person');
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chat = ref.watch(chatProvider(chatId));
+    final user = ref.watch(userProvider(chat!.contactId));
 
     return MaterialButton(
       padding: const EdgeInsets.all(0),
@@ -105,7 +107,9 @@ class _ChatItem extends ConsumerWidget {
       },
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(8, 0, 13, 0),
+        minTileHeight: 68,
         leading: Avatar(
+          url: user?.avatarUrl,
           radius: 21,
         ),
         title: Column(
@@ -115,22 +119,22 @@ class _ChatItem extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  chat?.lastMessage?.text ?? '',
+                  user?.displayName ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(height: 1),
                 ),
                 Text(
-                  chat?.lastMessage?.createdAtFormatted ?? '',
+                  chat.lastMessage?.createdAtFormatted ?? '',
                   style: const TextStyle(
                     fontSize: 12,
                   ),
                 )
               ],
             ),
-            const Gap(8),
+            const Gap(5),
             Text(
-              chat?.lastMessage?.text ?? '',
+              chat.lastMessage?.text ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

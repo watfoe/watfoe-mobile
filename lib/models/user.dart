@@ -5,13 +5,25 @@ enum UserType {
   personal,
 }
 
+// convert UserType from string to enum
+UserType userTypeFromString(String type) {
+  switch (type) {
+    case 'organization':
+      return UserType.organization;
+    case 'personal':
+      return UserType.personal;
+    default:
+      throw Exception('Unknown user type: $type');
+  }
+}
+
 class User {
   final UserId id;
   final UserType type;
   final String firstname;
   final String lastname;
   final String? phoneticName;
-  final String? displayName;
+  final String? localContactName;
   final String? phoneNumber;
   final String? avatarUrl;
 
@@ -26,7 +38,7 @@ class User {
     required this.firstname,
     required this.lastname,
     this.phoneticName,
-    this.displayName,
+    this.localContactName,
     this.phoneNumber,
     this.avatarUrl,
     this.isOnline = false,
@@ -39,7 +51,7 @@ class User {
     String? firstname,
     String? lastname,
     String? phoneticName,
-    String? displayName,
+    String? localContactName,
     String? phoneNumber,
     String? avatarUrl,
     bool? isOnline,
@@ -52,7 +64,7 @@ class User {
       firstname: firstname ?? this.firstname,
       lastname: lastname ?? this.lastname,
       phoneticName: phoneticName ?? this.phoneticName,
-      displayName: displayName ?? this.displayName,
+      localContactName: localContactName ?? this.localContactName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       isOnline: isOnline ?? this.isOnline,
@@ -60,4 +72,23 @@ class User {
       isLocalContact: isLocalContact ?? this.isLocalContact,
     );
   }
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      type: userTypeFromString(json['type']),
+      firstname: json['firstname'],
+      lastname: json['lastname'],
+      phoneticName: json['phoneticName'],
+      localContactName: json['localContactName'],
+      phoneNumber: json['phoneNumber'],
+      avatarUrl: json['avatarUrl'],
+      isOnline: json['isOnline'],
+      hasStatus: json['hasStatus'],
+      isLocalContact: json['isLocalContact'],
+    );
+  }
+
+  String get displayName =>
+      localContactName ?? phoneticName ?? '$firstname $lastname';
 }
