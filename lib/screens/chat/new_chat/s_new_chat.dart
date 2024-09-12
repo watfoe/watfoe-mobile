@@ -150,7 +150,7 @@ class _NewChatScreen extends ConsumerState<NewChatScreen> {
         padding: EdgeInsets.only(left: 13, top: topPadding),
         child: Text(title,
             style: const TextStyle(
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             )),
       ),

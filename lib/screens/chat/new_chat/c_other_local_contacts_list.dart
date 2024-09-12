@@ -2,6 +2,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watfoe/components/avatar.dart';
+import 'package:watfoe/theme/color_scheme.dart';
 
 class OtherLocalContactsList extends ConsumerStatefulWidget {
   const OtherLocalContactsList(
@@ -37,16 +38,23 @@ Widget _buildListItem(BuildContext context, Contact contact) {
   return ListTile(
     contentPadding: const EdgeInsets.fromLTRB(8, 0, 13, 0),
     minTileHeight: 68,
-    title: Text(contact.displayName ?? contact.phones!.first.value!,
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-            fontSize: 16,
-            height: 1)),
-    titleTextStyle: TextStyle(
-        color: Theme.of(context).colorScheme.primary, fontSize: 16, height: 1),
+    title: Text(
+      contact.displayName ?? contact.phones!.first.value!,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.primary,
+        fontSize: 17,
+      ),
+    ),
     leading: Avatar(
       radius: 21,
     ),
-    trailing: const Text('Invite'),
+    trailing: const Text(
+      'Invite',
+      style: TextStyle(
+        color: colorPrimary6,
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
   );
 }

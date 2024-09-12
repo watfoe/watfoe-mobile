@@ -21,28 +21,6 @@ class InputArea extends ConsumerStatefulWidget {
 class _InputAreaState extends ConsumerState<InputArea> {
   TextEditingController messageController = TextEditingController();
 
-  String get chatId => widget.chatId;
-
-  @override
-  initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      messageController.addListener(() {
-        final value = messageController.text;
-        // final lines = value.split('\n');
-        // if (lines.length > 1) {
-        //   setState(() {
-        //     maxLines = lines.length;
-        //   });
-        // }
-        ref
-            .read(chatsProvider.notifier)
-            .updateChat(widget.chatId, (chat) => chat.copyWith(draft: value));
-      });
-    });
-  }
-
   _onSend() {
     final value = messageController.text;
     if (value.isNotEmpty) {
@@ -73,7 +51,9 @@ class _InputAreaState extends ConsumerState<InputArea> {
       child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         isTyping
             ? _TextInputField(
-                controller: messageController, chatId: chatId, onSend: _onSend)
+                controller: messageController,
+                chatId: widget.chatId,
+                onSend: _onSend)
             : const SizedBox(),
         Row(
             mainAxisSize: MainAxisSize.min,
@@ -89,7 +69,7 @@ class _InputAreaState extends ConsumerState<InputArea> {
                   child: isTyping
                       ? const Row()
                       : _TextInputField(
-                          chatId: chatId,
+                          chatId: widget.chatId,
                         )),
               ButtonIcon(
                 icon: FluentIcons.camera_24_regular,
@@ -113,7 +93,7 @@ class _InputAreaState extends ConsumerState<InputArea> {
                 tooltip: 'Add attachment',
               ),
               const Gap(3),
-              _SendRecordButton(chatId: chatId, onSend: _onSend),
+              _SendRecordButton(chatId: widget.chatId, onSend: _onSend),
             ])
       ]),
     );
@@ -165,6 +145,11 @@ class _TextInputFieldState extends ConsumerState<_TextInputField> {
       style: const TextStyle(
         fontSize: 18,
       ),
+      onChanged: (value) {
+        ref
+            .read(chatsProvider.notifier)
+            .updateChat(widget.chatId, (chat) => chat.copyWith(draft: value));
+      },
       onTap: () {
         if (!isTyping) {
           ref.read(chatsProvider.notifier).updateChat(

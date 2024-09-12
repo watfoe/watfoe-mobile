@@ -166,7 +166,7 @@ class _WatfoeScaffold extends State<WatfoeScaffold> {
         widget.appBarTitle!,
         style: TextStyle(
             color: Theme.of(context).primaryColor,
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.w500),
         overflow: TextOverflow.ellipsis,
       );

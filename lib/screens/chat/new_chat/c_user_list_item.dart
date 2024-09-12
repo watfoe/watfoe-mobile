@@ -1,11 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:watfoe/components/avatar.dart';
 import 'package:watfoe/models/chat.dart';
 import 'package:watfoe/providers/chat/chats.dart';
 import 'package:watfoe/providers/users.dart';
-import 'package:watfoe/theme/color_scheme.dart';
 
 class UserListItem extends ConsumerStatefulWidget {
   const UserListItem(
@@ -60,19 +60,38 @@ class _UserListItemState extends ConsumerState<UserListItem> {
         onPressed: () {
           _onPressed(widget.userId);
         },
+        onLongPress: () {
+          widget.selectContact(widget.userId);
+        },
         child: ListTile(
           contentPadding: const EdgeInsets.fromLTRB(8, 0, 13, 0),
-          title: Text(user!.displayName),
-          titleTextStyle: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontSize: 16,
-              height: 1),
-          subtitle: const Text('Tagline goes here'),
-          subtitleTextStyle:
-              const TextStyle(color: colorNeutral7, fontSize: 15, height: 1),
+          minTileHeight: 68,
           leading: Avatar(
-            url: user.avatarUrl,
+            url: user?.avatarUrl,
             radius: 21,
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                user?.displayName ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Gap(2),
+              Text(
+                'Tagline goes here',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
           trailing: selected
               ? Container(

@@ -41,7 +41,8 @@ class _ChatsNotifier extends StateNotifier<Map<String, Chat>> {
   void addMessage(String chatId, Message message) {
     final chat = state[chatId];
     if (chat != null) {
-      final updatedChat = chat.copyWith(messages: [...chat.messages, message]);
+      final updatedChat =
+          chat.copyWith(messages: [...chat.messages, message], draft: '');
       state = {...state, chatId: updatedChat};
     }
   }

@@ -122,24 +122,26 @@ class _ChatItem extends ConsumerWidget {
                   user?.displayName ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(height: 1),
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Text(
                   chat.lastMessage?.createdAtFormatted ?? '',
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: 13,
                   ),
                 )
               ],
             ),
-            const Gap(5),
+            const Gap(2),
             Text(
               chat.lastMessage?.text ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 13,
-                height: 1,
+                fontSize: 15,
               ),
             ),
           ],
